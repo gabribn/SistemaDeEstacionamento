@@ -1,55 +1,78 @@
 package trabalhofinalPOO2;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
+import java.util.Date;
 
 public class FachadaSaida {
-    private Estacionamento estacionamento;
+	private Estacionamento estacionamento;
 
-    public FachadaSaida(Estacionamento estacionamento) {
-        this.estacionamento = estacionamento;
-    }
+	public FachadaSaida(Estacionamento estacionamento) {
+		this.estacionamento = estacionamento;
+	}
 
-    
-    //fachada
-    public void processarSaida(String placa, String dataSaida) {
-        Carro carro = estacionamento.buscarCarro(placa);
-        if (carro != null) {
-            String dataEntrada = carro.getDataEntrada();
-            if (verificaDataSaida(dataEntrada, dataSaida)) {
-                int diasEstadia = calcularDiasEstadia(dataEntrada, dataSaida);
-                calcTaxa(diasEstadia);
-                estacionamento.removeCarro(placa);
-            }
-        } else {
-            System.out.println("Carro com placa " + placa + " não encontrado no estacionamento.");
-        }
-    }
-    
+	// Fachada facade
+	public void processarSaida(String placa, String dataSaida) {
+		Carro carro = estacionamento.buscarCarro(placa);
+		if (carro != null) {
+			String dataEntrada = carro.getDataEntrada();
+			try {
+				SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+				Date data1 = formato.parse(dataEntrada);
+				Date data2 = formato.parse(dataSaida);
 
-    private boolean verificaDataSaida(String dataEntrada, String dataSaida) {
-        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM");
-        LocalDate data1 = LocalDate.parse(dataEntrada, formato);
-        LocalDate data2 = LocalDate.parse(dataSaida, formato);
-        if (data1.isBefore(data2)) {
-            return true;
-        } else if (data1.isAfter(data2)) {
-            System.out.println("Data de saída inválida.");
-            return false;
-        } else {
-            System.out.println(dataEntrada + " e " + dataSaida + " são iguais");
-            return false;
-        }
-    }
+				if (verificaDataSaida(data1, data2)) {
+					int diasEstadia = calcularDiasEstadia(data1, data2);
+					double taxa = calcTaxa(diasEstadia, carro.getNumVagas());
+					System.out.println("Taxa a ser paga: " + taxa);
+					
+					removeCarro(placa);
+				}
+			} catch (ParseException e) {
+				System.out.println("Formato de data inválido. Use o formato dd/MM/yyyy.");
+			}
+		} else {
+			System.out.println("Carro com placa " + placa + " não encontrado no estacionamento.");
+		}
+	}
 
-    private int calcularDiasEstadia(String dataEntrada, String dataSaida) {
-        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM");
-        LocalDate data1 = LocalDate.parse(dataEntrada, formato);
-        LocalDate data2 = LocalDate.parse(dataSaida, formato);
-        return (int) data1.until(data2).getDays();
-    }
+	private boolean verificaDataSaida(Date dataEntrada, Date dataSaida) {
+		if (dataEntrada.before(dataSaida)) {
+			return true;
+		} else if (dataEntrada.after(dataSaida)) {
+			System.out.println("Data de saída inválida.");
+			return false;
+		} else {
+			System.out.println("As datas de entrada e saída são iguais.");
+			return false;
+		}
+	}
 
-    private void calcTaxa(int diasEstadia) {
-        // Implemente o cálculo da taxa com base nos dias de estadia aqui.
-    }
+	private int calcularDiasEstadia(Date dataEntrada, Date dataSaida) {
+		long diff = dataSaida.getTime() - dataEntrada.getTime();
+		return (int) (diff / (1000 * 60 * 60 * 24)); // Converte milissegundos para dias
+	}
+
+	private double calcTaxa(int diasEstadia, int numVagas) {
+		CalculadoraTaxa calculadora;
+
+		if (numVagas == 2) {
+			calculadora = new TaxaDupla();
+		} else {
+			calculadora = new TaxaPadrao();
+		}
+
+		return calculadora.calcularTaxa(diasEstadia, numVagas);
+	}
+
+	public void removeCarro(String placa) {
+	    for (Carro carro : estacionamento.getCarrosEstacionados()) {
+	        if (carro.getPlaca().equals(placa)) {
+	            estacionamento.getCarrosEstacionados().remove(carro);
+	            System.out.println("Carro com placa " + placa + " removido do estacionamento.");
+	            return;
+	        }
+	    }
+	    System.out.println("Carro com placa " + placa + " não encontrado no estacionamento.");
+	}
 }
