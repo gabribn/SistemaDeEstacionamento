@@ -1,10 +1,11 @@
 package trabalhofinalPOO2;
 
-public class Carro {
+public class Carro{
     private String placa;
     private String modelo;
 	private String dataEntrada;
 	private int numVagas;
+	
 	
     public Carro(String placa, String modelo, String dataEntrada, int numVagas) {
         this.placa = placa;

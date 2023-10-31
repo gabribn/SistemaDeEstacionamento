@@ -15,11 +15,10 @@ public class Main {
 			System.out.println("3. Remover um carro");
 			System.out.println("4. Sair do programa");
 			System.out.print("Escolha uma opção: \n");
-
 			int opcao = scanner.nextInt();
-
 			switch (opcao) {
 			case 1:
+				
 				System.out.print("Digite a placa do carro: ");
 				String placa = scanner.next();
 				System.out.print("Digite o modelo do carro: ");
@@ -28,7 +27,7 @@ public class Main {
 				String dataEntrada = scanner.next();
 				System.out.print("Digite número de vagas a serem ocupadas: ");
 				int numVagas = scanner.nextInt();
-				Carro carro = new Carro(placa, modelo, dataEntrada, numVagas);
+				Carro carro = CarroFactory.createCarro(placa, modelo, dataEntrada, numVagas);
 				estacionamento.adicionarCarro(carro);
 				System.out.println("Carro adicionado com sucesso.");
 				break;
@@ -49,7 +48,7 @@ public class Main {
 				estacionamentoFacade.processarSaida(placaRemover, dataSaida);
 				;
 				break;
-				
+
 			case 4:
 				System.out.println("Encerrando o programa.");
 				scanner.close();

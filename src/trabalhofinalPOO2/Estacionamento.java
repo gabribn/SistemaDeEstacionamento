@@ -7,7 +7,7 @@ public class Estacionamento {
     private static Estacionamento instancia;
     private List<Carro> carrosEstacionados;
     private int capacidadeMaxima;
-
+    
     private Estacionamento() {
         carrosEstacionados = new ArrayList<>();
         capacidadeMaxima = 100; 
