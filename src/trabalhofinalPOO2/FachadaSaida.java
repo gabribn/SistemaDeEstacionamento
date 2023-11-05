@@ -6,12 +6,10 @@ import java.util.Date;
 
 public class FachadaSaida {
 	private Estacionamento estacionamento;
-
 	public FachadaSaida(Estacionamento estacionamento) {
 		this.estacionamento = estacionamento;
 	}
 
-	// Fachada facade
 	public void processarSaida(String placa, String dataSaida) {
 		Carro carro = estacionamento.buscarCarro(placa);
 		if (carro != null) {
@@ -25,7 +23,7 @@ public class FachadaSaida {
 					int diasEstadia = calcularDiasEstadia(data1, data2);
 					double taxa = calcTaxa(diasEstadia, carro.getNumVagas());
 					System.out.println("Taxa a ser paga: " + taxa);
-					
+					estacionamento.resumo.att(taxa);
 					removeCarro(placa);
 				}
 			} catch (ParseException e) {

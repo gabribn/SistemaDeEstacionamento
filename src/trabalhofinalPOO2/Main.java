@@ -7,13 +7,14 @@ public class Main {
 		Estacionamento estacionamento = Estacionamento.getInstancia();// Singleton
 		Scanner scanner = new Scanner(System.in);
 		FachadaSaida estacionamentoFacade = new FachadaSaida(estacionamento);
-
+		
 		while (true) {
 			System.out.println("\nSistema de Estacionamento");
 			System.out.println("1. Adicionar carro");
 			System.out.println("2. Listar carros estacionados");
 			System.out.println("3. Remover um carro");
-			System.out.println("4. Sair do programa");
+			System.out.println("4. Relatório");
+			System.out.println("5. Sair do programa");
 			System.out.print("Escolha uma opção: \n");
 			int opcao = scanner.nextInt();
 			switch (opcao) {
@@ -50,6 +51,12 @@ public class Main {
 				break;
 
 			case 4:
+				System.out.print("Digite a senha para visualizar resumo: ");
+				String senha = scanner.next();
+				System.out.print(estacionamento.resumo.toString(senha));
+				break;
+				
+			case 5:
 				System.out.println("Encerrando o programa.");
 				scanner.close();
 				System.exit(0);

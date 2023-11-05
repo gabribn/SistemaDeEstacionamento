@@ -7,6 +7,7 @@ public class Estacionamento {
     private static Estacionamento instancia;
     private List<Carro> carrosEstacionados;
     private int capacidadeMaxima;
+    ResumoProxy resumo = new ResumoProxy(0, 0);
     
     private Estacionamento() {
         carrosEstacionados = new ArrayList<>();
@@ -41,6 +42,7 @@ public class Estacionamento {
         }
         return null;
     }
+    
     
     public List<Carro> getCarrosEstacionados() {
         return carrosEstacionados;
